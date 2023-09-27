@@ -2,22 +2,22 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateDiaryDto } from './dto/diary.dto';
+} from "@nestjs/common";
+import { PrismaService } from "src/prisma/prisma.service";
+import { CreateDiaryDto } from "./dto/diary.dto";
 import {
   SearchDiariesDto,
   SearchDiaryYearMonthDto,
-} from './dto/searchDiary.dto';
-import { Page } from 'src/common/utils/Page/Page';
-import { DateUtils } from 'src/common/utils/DateUtils';
+} from "./dto/searchDiary.dto";
+import { Page } from "src/common/utils/Page/Page";
+import { DateUtils } from "src/common/utils/DateUtils";
 
 @Injectable()
 export class DiaryService {
   constructor(private prismaService: PrismaService) {}
 
   getDiaryDateFilter(
-    searchQueryParam: SearchDiariesDto | SearchDiaryYearMonthDto,
+    searchQueryParam: SearchDiariesDto | SearchDiaryYearMonthDto
   ) {
     const { year, month } = searchQueryParam;
 
@@ -32,7 +32,7 @@ export class DiaryService {
           lt: new Date(
             numberMonth < 12
               ? `${numberYear}-${numberMonth + 1}-01`
-              : `${numberYear + 1}-01-01`,
+              : `${numberYear + 1}-01-01`
           ),
         },
       };
@@ -59,17 +59,17 @@ export class DiaryService {
         content: {
           contains: contentContains,
         },
-        ...dateFilter,
+        ...(contentContains ? {} : dateFilter),
       },
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
       take: searchQueryParam.getLimit(),
       skip: searchQueryParam.getOffset(),
     });
 
     return {
-      message: '다이어리 조회가 성공했습니다.',
+      message: "다이어리 조회가 성공했습니다.",
       data: new Page({
         totalCount,
         page: searchQueryParam.page,
@@ -98,11 +98,11 @@ export class DiaryService {
     });
 
     if (!diary) {
-      throw new NotFoundException('Diary not found');
+      throw new NotFoundException("Diary not found");
     }
 
     if (diary.userId !== userId) {
-      throw new ForbiddenException('Unauthorized access to diary');
+      throw new ForbiddenException("Unauthorized access to diary");
     }
 
     const tags = diary.tags.map((tagItem) => tagItem.tag.title);
@@ -113,14 +113,14 @@ export class DiaryService {
     };
 
     return {
-      message: '다이어리 조회가 성공했습니다.',
+      message: "다이어리 조회가 성공했습니다.",
       data: copyDiary,
     };
   }
 
   async getDiarySummary(
     searchQueryParam: SearchDiaryYearMonthDto,
-    userId: number,
+    userId: number
   ) {
     const { dateFilter } = this.getDiaryDateFilter(searchQueryParam);
 
@@ -137,8 +137,8 @@ export class DiaryService {
       const date = new Date(diary.createdAt);
 
       const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
 
       const dateString = `${year}-${month}-${day}`;
 
@@ -169,11 +169,11 @@ export class DiaryService {
 
     const totalDayCount = DateUtils.monthTotalDayCount(
       searchQueryParam.year,
-      searchQueryParam.month,
+      searchQueryParam.month
     );
 
     const diaryWritePercentage = Math.round(
-      (monthDiariesCount / totalDayCount) * 100,
+      (monthDiariesCount / totalDayCount) * 100
     );
 
     const response = {
@@ -186,7 +186,7 @@ export class DiaryService {
     };
 
     return {
-      message: '일기 요약 조회에 성공 했습니다.',
+      message: "일기 요약 조회에 성공 했습니다.",
       data: response,
     };
   }
@@ -215,14 +215,14 @@ export class DiaryService {
     });
 
     return {
-      message: '일기가 정상적으로 등록되었습니다.',
+      message: "일기가 정상적으로 등록되었습니다.",
     };
   }
 
   async updateDiary(
     userId: number,
     diaryId: number,
-    updateDiaryDto: CreateDiaryDto,
+    updateDiaryDto: CreateDiaryDto
   ) {
     await this.getDiaryById(userId, diaryId);
 
@@ -263,7 +263,7 @@ export class DiaryService {
     });
 
     return {
-      message: '다이어리 수정이 성공했습니다.',
+      message: "다이어리 수정이 성공했습니다.",
     };
   }
 
@@ -278,7 +278,7 @@ export class DiaryService {
     });
 
     return {
-      message: '일기가 성공적으로 삭제되었습니다.',
+      message: "일기가 성공적으로 삭제되었습니다.",
     };
   }
 }
