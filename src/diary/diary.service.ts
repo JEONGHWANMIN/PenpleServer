@@ -84,17 +84,6 @@ export class DiaryService {
       where: {
         id: diaryId,
       },
-      include: {
-        tags: {
-          select: {
-            tag: {
-              select: {
-                title: true,
-              },
-            },
-          },
-        },
-      },
     });
 
     if (!diary) {
@@ -105,11 +94,8 @@ export class DiaryService {
       throw new ForbiddenException("Unauthorized access to diary");
     }
 
-    const tags = diary.tags.map((tagItem) => tagItem.tag.title);
-
     const copyDiary = {
       ...diary,
-      tags,
     };
 
     return {

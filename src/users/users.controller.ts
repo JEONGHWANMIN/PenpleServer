@@ -7,47 +7,47 @@ import {
   Post,
   Query,
   UseGuards,
-} from '@nestjs/common';
-import { CreateUserDto, LoginUserDto } from './dto';
-import { UsersService } from './users.service';
-import { GetTokenUser } from 'src/common/decorator/user.decorator';
-import { AccessTokenGuard, RefreshTokenGuard } from 'src/common/guards';
-import { AccessTokenPayload, RefreshTokenPayload } from './types/tokenPayload';
+} from "@nestjs/common";
+import { CreateUserDto, LoginUserDto } from "./dto";
+import { UsersService } from "./users.service";
+import { GetTokenUser } from "src/common/decorator/user.decorator";
+import { AccessTokenGuard, RefreshTokenGuard } from "src/common/guards";
+import { AccessTokenPayload, RefreshTokenPayload } from "./types/tokenPayload";
 
 @Injectable()
-@Controller('users')
+@Controller("users")
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  @Post('/signup')
+  @Post("/signup")
   async createUser(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
-  @Post('/signin')
+  @Post("/signin")
   async loginUser(@Body() loginUserDto: LoginUserDto) {
     return this.usersService.login(loginUserDto);
   }
 
-  @Get('/check')
-  findEmail(@Query('email') email: string) {
+  @Get("/check")
+  findEmail(@Query("email") email: string) {
     return this.usersService.checkDuplicateEmail(email);
   }
 
   @UseGuards(AccessTokenGuard)
-  @Get('/')
+  @Get("/")
   logout(@GetTokenUser() user: AccessTokenPayload) {
     return this.usersService.logout(user.userId);
   }
 
   @UseGuards(AccessTokenGuard)
-  @Delete('/')
+  @Delete("/")
   deleteUser(@GetTokenUser() user: AccessTokenPayload) {
     return this.usersService.delete(user.userId);
   }
 
   @UseGuards(RefreshTokenGuard)
-  @Get('/renew')
+  @Get("/renew")
   refreshTokens(@GetTokenUser() user: RefreshTokenPayload) {
     const userId = user.userId;
     const refreshToken = user.refreshToken;
