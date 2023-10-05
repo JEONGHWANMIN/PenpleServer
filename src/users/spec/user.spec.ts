@@ -1,13 +1,13 @@
-import { Tspec } from 'tspec';
-import { LoginUserDto } from '../dto';
-import { CreateUserDto } from '../dto';
+import { Tspec } from "tspec";
+import { LoginUserDto } from "../dto";
+import { CreateUserDto } from "../dto";
 
 export type UsersApiSpec = Tspec.DefineApiSpec<{
-  tags: ['users'];
+  tags: ["users"];
   paths: {
-    '/users/signup': {
+    "/users/signup": {
       post: {
-        summary: '유저 회원가입';
+        summary: "유저 회원가입";
         body: CreateUserDto;
         responses: {
           201: {
@@ -16,9 +16,9 @@ export type UsersApiSpec = Tspec.DefineApiSpec<{
         };
       };
     };
-    '/users/signin': {
+    "/users/signin": {
       post: {
-        summary: '유저 로그인';
+        summary: "유저 로그인";
         body: LoginUserDto;
         responses: {
           201: {
@@ -29,10 +29,10 @@ export type UsersApiSpec = Tspec.DefineApiSpec<{
         };
       };
     };
-    '/users/check': {
-      get: {
-        summary: '이메일 중복체크';
-        query: {
+    "/users/check": {
+      post: {
+        summary: "이메일 중복체크";
+        body: {
           email: string;
         };
         responses: {
@@ -43,10 +43,10 @@ export type UsersApiSpec = Tspec.DefineApiSpec<{
         };
       };
     };
-    '/users': {
+    "/users": {
       get: {
-        security: 'bearerAuth';
-        summary: '유저 로그아웃';
+        security: "bearerAuth";
+        summary: "유저 로그아웃";
         responses: {
           200: {
             message: string;
@@ -55,7 +55,7 @@ export type UsersApiSpec = Tspec.DefineApiSpec<{
         };
       };
       delete: {
-        summary: '유저 회원탈퇴';
+        summary: "유저 회원탈퇴";
         header: {
           Authorization: string;
         };
@@ -66,9 +66,9 @@ export type UsersApiSpec = Tspec.DefineApiSpec<{
         };
       };
     };
-    '/users/renew': {
+    "/users/renew": {
       get: {
-        summary: '토큰 갱신';
+        summary: "토큰 갱신";
         header: {
           Authorization: string;
         };
