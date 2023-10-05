@@ -1,12 +1,12 @@
-import { JwtService } from '@nestjs/jwt';
+import { JwtService } from "@nestjs/jwt";
 import {
   ConflictException,
   ForbiddenException,
   Injectable,
-} from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { CreateUserDto, LoginUserDto } from './dto';
-import * as bcrypt from 'bcrypt';
+} from "@nestjs/common";
+import { PrismaService } from "../prisma/prisma.service";
+import { CreateUserDto, LoginUserDto } from "./dto";
+import * as bcrypt from "bcrypt";
 
 const saltRounds = 10;
 
@@ -18,11 +18,12 @@ export class UsersService {
     const userEmail = await this.findByEmail(newUser.email);
 
     if (userEmail) {
-      throw new ConflictException('이메일이 이미 존재합니다.');
+      throw new ConflictException("이메일이 이미 존재합니다.");
     }
 
     try {
       const hashString = await this.hashString(newUser.password);
+
       await this.prisma.user.create({
         data: {
           ...newUser,
@@ -31,10 +32,10 @@ export class UsersService {
       });
 
       return {
-        message: '사용자 생성에 성공했습니다.',
+        message: "사용자 생성에 성공했습니다.",
       };
     } catch (error) {
-      throw new Error('사용자 생성에 실패했습니다.');
+      throw new Error("사용자 생성에 실패했습니다.");
     }
   }
 
@@ -42,16 +43,16 @@ export class UsersService {
     const user = await this.findByEmail(loginUser.email);
 
     if (!user) {
-      throw new ConflictException('등록되지 않은 유저 입니다.');
+      throw new ConflictException("등록되지 않은 유저 입니다.");
     }
 
     const isPasswordMatch = await this.verifyPassword(
       loginUser.password,
-      user.password,
+      user.password
     );
 
     if (!isPasswordMatch) {
-      throw new ForbiddenException('Password is not valid');
+      throw new ForbiddenException("Password is not valid");
     }
 
     const tokens = await this.getTokens(user.id, user.email, user.nickname);
@@ -59,7 +60,7 @@ export class UsersService {
     await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     return {
-      message: '로그인 성공했습니다.',
+      message: "로그인 성공했습니다.",
       ...tokens,
     };
   }
@@ -74,7 +75,7 @@ export class UsersService {
       },
     });
     return {
-      message: '로그아웃이 성공했습니다.',
+      message: "로그아웃이 성공했습니다.",
     };
   }
 
@@ -86,7 +87,7 @@ export class UsersService {
     });
 
     return {
-      message: '유저 삭제에 성공했습니다.',
+      message: "유저 삭제에 성공했습니다.",
     };
   }
 
@@ -108,14 +109,11 @@ export class UsersService {
     const user = await this.findByEmail(email);
 
     if (user) {
-      return {
-        message: '이미 사용중인 이메일 입니다.',
-        isDuplicate: true,
-      };
+      throw new ConflictException("이미 존재하는 이메일입니다.");
     }
 
     return {
-      message: '사용 가능한 이메일 입니다.',
+      message: "사용 가능한 이메일 입니다.",
       isDuplicate: false,
     };
   }
@@ -129,12 +127,12 @@ export class UsersService {
 
     const accessTokenOptions = {
       expiresIn: 60 * 60,
-      secret: 'accessToken',
+      secret: "accessToken",
     };
 
     const refreshTokenOptions = {
       expiresIn: 60 * 60 * 24 * 7,
-      secret: 'refreshToken',
+      secret: "refreshToken",
     };
 
     const [accessToken, refreshToken] = await Promise.all([
@@ -169,23 +167,23 @@ export class UsersService {
     });
 
     if (!user || !user.refreshToken) {
-      throw new ForbiddenException('일치하는 유저 및 토큰이 없습니다.');
+      throw new ForbiddenException("일치하는 유저 및 토큰이 없습니다.");
     }
 
     const refreshTokenMatches = await bcrypt.compare(
       refreshToken,
-      user.refreshToken,
+      user.refreshToken
     );
 
     if (!refreshTokenMatches) {
-      throw new ForbiddenException('리프레쉬 토큰이 일치하지 않습니다.');
+      throw new ForbiddenException("리프레쉬 토큰이 일치하지 않습니다.");
     }
 
     const tokens = await this.getTokens(user.id, user.email, user.nickname);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     return {
-      message: '토큰 갱신에 성공했습니다.',
+      message: "토큰 갱신에 성공했습니다.",
       ...tokens,
     };
   }
