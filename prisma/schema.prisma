@@ -19,6 +19,7 @@ model User {
   email        String   @unique
   nickname     String
   password     String
+  phoneNumber  String   @default("")
   createdAt    DateTime @default(now())
   refreshToken String?
   diaries      Diary[]
@@ -33,24 +34,7 @@ model Diary {
   mood      String?
   userId    Int
   user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tags      DiaryTags[]
 
   @@index([userId])
 }
 
-model DiaryTags {
-  id      Int    @id @default(autoincrement())
-  diary   Diary? @relation(fields: [diaryId], references: [id])
-  tag     Tag?   @relation(fields: [tagId], references: [id])
-  diaryId Int?
-  tagId   Int?
-
-  @@unique([tagId, diaryId])
-  @@index([diaryId])
-}
-
-model Tag {
-  id        Int         @id @default(autoincrement())
-  title     String      @unique
-  diaryTags DiaryTags[]
-}
