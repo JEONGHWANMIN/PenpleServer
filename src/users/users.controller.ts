@@ -29,8 +29,8 @@ export class UsersController {
     return this.usersService.login(loginUserDto);
   }
 
-  @Get("/check")
-  findEmail(@Query("email") email: string) {
+  @Post("/check")
+  findEmail(@Body("email") email: string) {
     return this.usersService.checkDuplicateEmail(email);
   }
 
