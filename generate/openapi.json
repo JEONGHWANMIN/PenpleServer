@@ -568,13 +568,17 @@
                   },
                   "password": {
                     "type": "string"
+                  },
+                  "phoneNumber": {
+                    "type": "string"
                   }
                 },
                 "additionalProperties": false,
                 "required": [
                   "email",
                   "nickname",
-                  "password"
+                  "password",
+                  "phoneNumber"
                 ]
               }
             }
@@ -666,22 +670,32 @@
       }
     },
     "/users/check": {
-      "get": {
-        "operationId": "UsersApiSpec_get_/users/check",
+      "post": {
+        "operationId": "UsersApiSpec_post_/users/check",
         "tags": [
           "users"
         ],
         "summary": "이메일 중복체크",
-        "parameters": [
-          {
-            "name": "email",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                  "email"
+                ]
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "",
@@ -883,13 +897,17 @@
           },
           "password": {
             "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
           }
         },
         "additionalProperties": false,
         "required": [
           "email",
           "nickname",
-          "password"
+          "password",
+          "phoneNumber"
         ]
       },
       "LoginUserDto": {
