@@ -178,17 +178,6 @@ export class DiaryService {
   }
 
   async createDiary(userId: number, createDiaryDto: CreateDiaryDto) {
-    const tagMaps = {
-      create: createDiaryDto?.tags.map((tag) => ({
-        tag: {
-          connectOrCreate: {
-            where: { title: tag },
-            create: { title: tag },
-          },
-        },
-      })),
-    };
-
     await this.prismaService.diary.create({
       data: {
         userId,
@@ -196,7 +185,6 @@ export class DiaryService {
         content: createDiaryDto.content,
         mood: createDiaryDto.mood,
         weather: createDiaryDto.weather,
-        tags: tagMaps,
       },
     });
 
@@ -222,29 +210,6 @@ export class DiaryService {
         content: updateDiaryDto.content,
         mood: updateDiaryDto.mood,
         weather: updateDiaryDto.weather,
-        tags: {
-          set: [],
-        },
-      },
-    });
-
-    const tagMaps = {
-      create: updateDiaryDto?.tags.map((tag) => ({
-        tag: {
-          connectOrCreate: {
-            where: { title: tag },
-            create: { title: tag },
-          },
-        },
-      })),
-    };
-
-    await this.prismaService.diary.update({
-      where: {
-        id: diaryId,
-      },
-      data: {
-        tags: tagMaps,
       },
     });
 
