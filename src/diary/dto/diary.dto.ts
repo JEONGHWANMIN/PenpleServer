@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class CreateDiaryDto {
   @IsNotEmpty()
@@ -16,8 +16,4 @@ export class CreateDiaryDto {
   @IsOptional()
   @IsString()
   mood?: string;
-
-  @IsOptional()
-  @IsString({ each: true })
-  tags?: string[];
 }

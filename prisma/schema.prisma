@@ -27,8 +27,8 @@ model User {
 
 model Diary {
   id        Int         @id @default(autoincrement())
-  title     String
-  content   String
+  title     String      
+  content   String      @db.VarChar(2000)
   createdAt DateTime    @default(now())
   weather   String?
   mood      String?
