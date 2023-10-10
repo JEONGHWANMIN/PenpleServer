@@ -15,6 +15,8 @@
 
 ## 프로젝트 실행 방법 
 ```
+// Prisma DataBase Url 넣기
 npm i
+npm run build
 npm run start
 ```
