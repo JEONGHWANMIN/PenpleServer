@@ -1,6 +1,6 @@
-import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { PrismaClient } from '@prisma/client';
+import { Injectable, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { PrismaClient } from "@prisma/client";
 
 @Injectable()
 export class PrismaService
@@ -11,7 +11,7 @@ export class PrismaService
     super({
       datasources: {
         db: {
-          url: config.get('DATABASE_URL'),
+          url: config.get("DATABASE_URL"),
         },
       },
     });
@@ -23,5 +23,12 @@ export class PrismaService
 
   async onModuleDestroy() {
     await this.$disconnect();
+  }
+
+  async cleanDatabase() {
+    if (process.env.NODE_ENV === "production") return;
+    const models = Reflect.ownKeys(this).filter((key) => key[0] !== "_");
+
+    return Promise.all(models.map((modelKey) => this[modelKey].deleteMany()));
   }
 }
