@@ -146,7 +146,7 @@ export class UsersService {
     };
   }
 
-  async updateRefreshToken(userId: number, refreshToken: string | null) {
+  async updateRefreshToken(userId: number, refreshToken: string) {
     const hashedRefreshToken = await this.hashString(refreshToken);
 
     await this.prisma.user.update({
