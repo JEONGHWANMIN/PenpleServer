@@ -189,7 +189,6 @@
                         "items": {
                           "type": "array",
                           "items": {
-                            "description": "Model Diary",
                             "type": "object",
                             "properties": {
                               "id": {
@@ -206,10 +205,12 @@
                                 "format": "date-time"
                               },
                               "weather": {
-                                "type": "string"
+                                "type": "string",
+                                "nullable": true
                               },
                               "mood": {
-                                "type": "string"
+                                "type": "string",
+                                "nullable": true
                               },
                               "userId": {
                                 "type": "number"
