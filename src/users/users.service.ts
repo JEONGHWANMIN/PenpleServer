@@ -1,11 +1,14 @@
 import { JwtService } from "@nestjs/jwt";
 import {
+  CACHE_MANAGER,
   ConflictException,
   ForbiddenException,
+  Inject,
   Injectable,
 } from "@nestjs/common";
+import { Cache } from "cache-manager";
 import { PrismaService } from "../prisma/prisma.service";
-import { CreateUserDto, LoginUserDto } from "./dto";
+import { AuthDto, CreateUserDto, LoginUserDto } from "./dto";
 import * as bcrypt from "bcrypt";
 import { MailService } from "src/configs/mail/mail.service";
 import { generateRandomNumber } from "src/common/utils/generateRandomNumber";
@@ -17,18 +20,21 @@ export class UsersService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
-    private mailService: MailService
+    private mailService: MailService,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache
   ) {}
 
-  async sendMessage(toEmail: string) {
+  async sendAuthMessage(email: string) {
     const randomNumber = generateRandomNumber();
 
     try {
       await this.mailService.sendMail({
-        to: toEmail,
+        to: email,
         subject: "penple 인증번호 입니다.",
         html: `인증번호 <b>[${randomNumber}]<b>`,
       });
+
+      await this.cacheManager.set(email, randomNumber);
 
       return {
         message: "이메일 발송이 성공했습니다.",
@@ -36,6 +42,18 @@ export class UsersService {
     } catch (e) {
       throw new ConflictException("메일 전송에 실패했습니다.");
     }
+  }
+
+  async verifyAuthMessage(auth: AuthDto) {
+    const authNumber = await this.cacheManager.get(auth.email);
+
+    if (authNumber !== auth.authNumber) {
+      throw new ConflictException("인증번호가 유효하지 않습니다.");
+    }
+
+    return {
+      message: "인증에 성공했습니다.",
+    };
   }
 
   async create(newUser: CreateUserDto) {
