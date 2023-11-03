@@ -7,12 +7,36 @@ import {
 import { PrismaService } from "../prisma/prisma.service";
 import { CreateUserDto, LoginUserDto } from "./dto";
 import * as bcrypt from "bcrypt";
+import { MailService } from "src/configs/mail/mail.service";
+import { generateRandomNumber } from "src/common/utils/generateRandomNumber";
 
 const saltRounds = 10;
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService, private jwtService: JwtService) {}
+  constructor(
+    private prisma: PrismaService,
+    private jwtService: JwtService,
+    private mailService: MailService
+  ) {}
+
+  async sendMessage(toEmail: string) {
+    const randomNumber = generateRandomNumber();
+
+    try {
+      await this.mailService.sendMail({
+        to: toEmail,
+        subject: "penple 인증번호 입니다.",
+        html: `인증번호 <b>[${randomNumber}]<b>`,
+      });
+
+      return {
+        message: "이메일 발송이 성공했습니다.",
+      };
+    } catch (e) {
+      throw new ConflictException("메일 전송에 실패했습니다.");
+    }
+  }
 
   async create(newUser: CreateUserDto) {
     const userEmail = await this.findByEmail(newUser.email);

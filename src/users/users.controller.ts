@@ -5,7 +5,6 @@ import {
   Get,
   Injectable,
   Post,
-  Query,
   UseGuards,
 } from "@nestjs/common";
 import { CreateUserDto, LoginUserDto } from "./dto";
@@ -18,6 +17,12 @@ import { AccessTokenPayload, RefreshTokenPayload } from "./types/tokenPayload";
 @Controller("users")
 export class UsersController {
   constructor(private usersService: UsersService) {}
+
+  // https://4sii.tistory.com/437
+  @Post("/auth-number")
+  async sendEmailCheckMessage(@Body("email") email: string) {
+    return this.usersService.sendMessage(email);
+  }
 
   @Post("/signup")
   async createUser(@Body() createUserDto: CreateUserDto) {
