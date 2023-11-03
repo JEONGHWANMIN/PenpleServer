@@ -72,8 +72,8 @@ export class DiaryService {
       message: "다이어리 조회가 성공했습니다.",
       data: new Page({
         totalCount,
-        page: searchQueryParam.page,
-        size: searchQueryParam.size,
+        page: searchQueryParam.page || 1,
+        size: searchQueryParam.size || 10,
         items: diaries,
       }),
     };

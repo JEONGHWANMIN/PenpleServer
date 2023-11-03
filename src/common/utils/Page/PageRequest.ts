@@ -1,21 +1,20 @@
-//pageRequest.ts
-import { IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString } from "class-validator";
 
 export class PageRequest {
   @IsString()
   @IsOptional()
-  page?: number | 1;
+  page?: number = 1;
 
   @IsString()
   @IsOptional()
-  size?: number | 10;
+  size?: number = 10;
 
   getOffset(): number {
-    if (this.page < 1 || this.page === null || this.page === undefined) {
+    if (!this.page || this.page < 1) {
       this.page = 1;
     }
 
-    if (this.size < 1 || this.size === null || this.size === undefined) {
+    if (!this.size || this.size < 1) {
       this.size = 10;
     }
 
@@ -23,7 +22,7 @@ export class PageRequest {
   }
 
   getLimit(): number {
-    if (this.size < 1 || this.size === null || this.size === undefined) {
+    if (!this.size || this.size < 1) {
       this.size = 10;
     }
     return Number(this.size);
