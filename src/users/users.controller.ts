@@ -5,10 +5,9 @@ import {
   Get,
   Injectable,
   Post,
-  Query,
   UseGuards,
 } from "@nestjs/common";
-import { CreateUserDto, LoginUserDto } from "./dto";
+import { VerifyAuthDto, CreateUserDto, LoginUserDto, SendAuthDto } from "./dto";
 import { UsersService } from "./users.service";
 import { GetTokenUser } from "src/common/decorator/user.decorator";
 import { AccessTokenGuard, RefreshTokenGuard } from "src/common/guards";
@@ -18,6 +17,16 @@ import { AccessTokenPayload, RefreshTokenPayload } from "./types/tokenPayload";
 @Controller("users")
 export class UsersController {
   constructor(private usersService: UsersService) {}
+
+  @Post("/send-auth")
+  async sendAuthMessage(@Body() sendAuthDto: SendAuthDto) {
+    return this.usersService.sendAuthMessage(sendAuthDto.email);
+  }
+
+  @Post("/verify-auth")
+  async verifyAuthMessage(@Body() verifyAuthDto: VerifyAuthDto) {
+    return this.usersService.verifyAuthMessage(verifyAuthDto);
+  }
 
   @Post("/signup")
   async createUser(@Body() createUserDto: CreateUserDto) {

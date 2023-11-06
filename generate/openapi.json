@@ -189,7 +189,6 @@
                         "items": {
                           "type": "array",
                           "items": {
-                            "description": "Model Diary",
                             "type": "object",
                             "properties": {
                               "id": {
@@ -206,10 +205,12 @@
                                 "format": "date-time"
                               },
                               "weather": {
-                                "type": "string"
+                                "type": "string",
+                                "nullable": true
                               },
                               "mood": {
-                                "type": "string"
+                                "type": "string",
+                                "nullable": true
                               },
                               "userId": {
                                 "type": "number"
@@ -505,6 +506,110 @@
         },
         "responses": {
           "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/send-auth": {
+      "post": {
+        "operationId": "UsersApiSpec_post_/users/send-auth",
+        "tags": [
+          "users"
+        ],
+        "summary": "유저 핸드폰 인증 메세지 전송",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                  "email"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/verify-auth": {
+      "post": {
+        "operationId": "UsersApiSpec_post_/users/verify-auth",
+        "tags": [
+          "users"
+        ],
+        "summary": "유저 핸드폰 인증 메세지 확인",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "authNumber": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                  "authNumber",
+                  "email"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
             "description": "",
             "content": {
               "application/json": {
@@ -859,6 +964,34 @@
         "required": [
           "content",
           "title"
+        ]
+      },
+      "SendAuthDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "email"
+        ]
+      },
+      "VerifyAuthDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "authNumber": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "authNumber",
+          "email"
         ]
       },
       "CreateUserDto": {

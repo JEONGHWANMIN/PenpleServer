@@ -1,10 +1,32 @@
 import { Tspec } from "tspec";
-import { LoginUserDto } from "../dto";
+import { LoginUserDto, SendAuthDto, VerifyAuthDto } from "../dto";
 import { CreateUserDto } from "../dto";
 
 export type UsersApiSpec = Tspec.DefineApiSpec<{
   tags: ["users"];
   paths: {
+    "/users/send-auth": {
+      post: {
+        summary: "유저 핸드폰 인증 메세지 전송";
+        body: SendAuthDto;
+        responses: {
+          201: {
+            message: string;
+          };
+        };
+      };
+    };
+    "/users/verify-auth": {
+      post: {
+        summary: "유저 핸드폰 인증 메세지 확인";
+        body: VerifyAuthDto;
+        responses: {
+          201: {
+            message: string;
+          };
+        };
+      };
+    };
     "/users/signup": {
       post: {
         summary: "유저 회원가입";

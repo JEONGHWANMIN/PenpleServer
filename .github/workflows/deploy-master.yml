@@ -29,6 +29,14 @@ jobs:
               env:
                 - name: DATABASE_URL
                   value:  ${{ secrets.DATABASE_URL }}
+                - name: MAIL_HOST
+                  value:  ${{ secrets.MAIL_HOST }}
+                - name: MAIL_USER
+                  value:  ${{ secrets.MAIL_USER }}
+                - name: MAIL_PASSWORD
+                  value:  ${{ secrets.MAIL_PASSWORD }}
+                - name: MAIL_FROM
+                  value:  ${{ secrets.MAIL_FROM }}
               ports: "8080"
               build: npm run build
               start: npm run start
