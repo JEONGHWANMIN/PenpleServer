@@ -7,7 +7,7 @@ import {
   Post,
   UseGuards,
 } from "@nestjs/common";
-import { AuthDto, CreateUserDto, LoginUserDto } from "./dto";
+import { VerifyAuthDto, CreateUserDto, LoginUserDto, SendAuthDto } from "./dto";
 import { UsersService } from "./users.service";
 import { GetTokenUser } from "src/common/decorator/user.decorator";
 import { AccessTokenGuard, RefreshTokenGuard } from "src/common/guards";
@@ -19,13 +19,13 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Post("/send-auth")
-  async sendAuthMessage(@Body("email") email: string) {
-    return this.usersService.sendAuthMessage(email);
+  async sendAuthMessage(@Body() sendAuthDto: SendAuthDto) {
+    return this.usersService.sendAuthMessage(sendAuthDto.email);
   }
 
   @Post("/verify-auth")
-  async verifyAuthMessage(@Body() auth: AuthDto) {
-    return this.usersService.verifyAuthMessage(auth);
+  async verifyAuthMessage(@Body() verifyAuthDto: VerifyAuthDto) {
+    return this.usersService.verifyAuthMessage(verifyAuthDto);
   }
 
   @Post("/signup")

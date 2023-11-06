@@ -8,7 +8,7 @@ import {
 } from "@nestjs/common";
 import { Cache } from "cache-manager";
 import { PrismaService } from "../prisma/prisma.service";
-import { AuthDto, CreateUserDto, LoginUserDto } from "./dto";
+import { VerifyAuthDto, CreateUserDto, LoginUserDto } from "./dto";
 import * as bcrypt from "bcrypt";
 import { MailService } from "src/configs/mail/mail.service";
 import { generateRandomNumber } from "src/common/utils/generateRandomNumber";
@@ -44,10 +44,10 @@ export class UsersService {
     }
   }
 
-  async verifyAuthMessage(auth: AuthDto) {
-    const authNumber = await this.cacheManager.get(auth.email);
+  async verifyAuthMessage(verifyAuthDto: VerifyAuthDto) {
+    const authNumber = await this.cacheManager.get(verifyAuthDto.email);
 
-    if (authNumber !== auth.authNumber) {
+    if (authNumber !== verifyAuthDto.authNumber) {
       throw new ConflictException("인증번호가 유효하지 않습니다.");
     }
 

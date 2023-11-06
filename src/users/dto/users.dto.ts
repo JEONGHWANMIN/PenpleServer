@@ -28,7 +28,13 @@ export class LoginUserDto {
   password: string;
 }
 
-export class AuthDto {
+export class SendAuthDto {
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+}
+
+export class VerifyAuthDto {
   @IsEmail()
   @IsNotEmpty()
   email: string;
