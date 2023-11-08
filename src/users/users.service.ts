@@ -8,7 +8,13 @@ import {
 } from "@nestjs/common";
 import { Cache } from "cache-manager";
 import { PrismaService } from "../prisma/prisma.service";
-import { VerifyAuthDto, CreateUserDto, LoginUserDto } from "./dto";
+import {
+  VerifyAuthDto,
+  CreateUserDto,
+  LoginUserDto,
+  ChangePasswordDto,
+  ForgotPasswordDto,
+} from "./dto";
 import * as bcrypt from "bcrypt";
 import { MailService } from "src/configs/mail/mail.service";
 import { generateRandomNumber } from "src/common/utils/generateRandomNumber";
@@ -81,6 +87,71 @@ export class UsersService {
     }
   }
 
+  async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email: forgotPasswordDto.email,
+      },
+    });
+
+    if (!user) {
+      throw new ConflictException("등록되지 않은 유저 입니다.");
+    }
+
+    const hashedPassword = await this.hashString(forgotPasswordDto.newPassword);
+
+    await this.prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        ...user,
+        password: hashedPassword,
+      },
+    });
+
+    return {
+      message: "비밀번호 변경이 완료되었습니다.",
+    };
+  }
+
+  async changePassword(userId: number, changePasswordDto: ChangePasswordDto) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new ConflictException("등록되지 않은 유저 입니다.");
+    }
+
+    const isPasswordMatch = await this.verifyPassword(
+      changePasswordDto.password,
+      user.password
+    );
+
+    if (!isPasswordMatch) {
+      throw new ForbiddenException("비밀번호가 일치하지 않습니다.");
+    }
+
+    const hashString = await this.hashString(changePasswordDto.newPassword);
+
+    await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        ...user,
+        password: hashString,
+      },
+    });
+
+    return {
+      message: "비밀번호 변경이 완료되었습니다.",
+    };
+  }
+
   async login(loginUser: LoginUserDto) {
     const user = await this.findByEmail(loginUser.email);
 
@@ -94,15 +165,22 @@ export class UsersService {
     );
 
     if (!isPasswordMatch) {
-      throw new ForbiddenException("Password is not valid");
+      throw new ForbiddenException("비밀번호가 일치하지 않습니다.");
     }
 
     const tokens = await this.getTokens(user.id, user.email, user.nickname);
 
     await this.updateRefreshToken(user.id, tokens.refreshToken);
 
+    const userInfo = {
+      email: user.email,
+      nickName: user.nickname,
+      createdAt: user.createdAt,
+    };
+
     return {
       message: "로그인 성공했습니다.",
+      userInfo,
       ...tokens,
     };
   }
