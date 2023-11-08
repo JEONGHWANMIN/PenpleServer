@@ -13,7 +13,6 @@ export class CreateUserDto {
   @IsString()
   password: string;
 
-  @IsNotEmpty()
   @IsString()
   phoneNumber: string;
 }
@@ -42,4 +41,24 @@ export class VerifyAuthDto {
   @IsNumber()
   @IsNotEmpty()
   authNumber: string;
+}
+
+export class ChangePasswordDto {
+  @IsNotEmpty()
+  @IsString()
+  password: string;
+
+  @IsNotEmpty()
+  @IsString()
+  newPassword: string;
+}
+
+export class ForgotPasswordDto {
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+
+  @IsNotEmpty()
+  @IsString()
+  newPassword: string;
 }

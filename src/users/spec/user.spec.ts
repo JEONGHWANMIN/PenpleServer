@@ -1,5 +1,11 @@
 import { Tspec } from "tspec";
-import { LoginUserDto, SendAuthDto, VerifyAuthDto } from "../dto";
+import {
+  ChangePasswordDto,
+  ForgotPasswordDto,
+  LoginUserDto,
+  SendAuthDto,
+  VerifyAuthDto,
+} from "../dto";
 import { CreateUserDto } from "../dto";
 
 export type UsersApiSpec = Tspec.DefineApiSpec<{
@@ -22,6 +28,31 @@ export type UsersApiSpec = Tspec.DefineApiSpec<{
         body: VerifyAuthDto;
         responses: {
           201: {
+            message: string;
+          };
+        };
+      };
+    };
+    "/user/forgot-password": {
+      put: {
+        summary: "유저 비밀번호 잊어버릴 시 비밀번호 재설정";
+        body: ForgotPasswordDto;
+        responses: {
+          200: {
+            message: string;
+          };
+        };
+      };
+    };
+    "/user/change-password": {
+      put: {
+        summary: "유저 비밀번호 변경하기";
+        header: {
+          Authorization: string;
+        };
+        body: ChangePasswordDto;
+        responses: {
+          200: {
             message: string;
           };
         };

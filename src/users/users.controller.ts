@@ -5,13 +5,22 @@ import {
   Get,
   Injectable,
   Post,
+  Put,
   UseGuards,
 } from "@nestjs/common";
-import { VerifyAuthDto, CreateUserDto, LoginUserDto, SendAuthDto } from "./dto";
+import {
+  VerifyAuthDto,
+  CreateUserDto,
+  LoginUserDto,
+  SendAuthDto,
+  ForgotPasswordDto,
+  ChangePasswordDto,
+} from "./dto";
 import { UsersService } from "./users.service";
 import { GetTokenUser } from "src/common/decorator/user.decorator";
 import { AccessTokenGuard, RefreshTokenGuard } from "src/common/guards";
 import { AccessTokenPayload, RefreshTokenPayload } from "./types/tokenPayload";
+import { AuthGuard } from "@nestjs/passport";
 
 @Injectable()
 @Controller("users")
@@ -26,6 +35,20 @@ export class UsersController {
   @Post("/verify-auth")
   async verifyAuthMessage(@Body() verifyAuthDto: VerifyAuthDto) {
     return this.usersService.verifyAuthMessage(verifyAuthDto);
+  }
+
+  @Put("/forgot-password")
+  async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
+    return this.usersService.forgotPassword(forgotPasswordDto);
+  }
+
+  @UseGuards(AccessTokenGuard)
+  @Put("/change-password")
+  async changePassword(
+    @GetTokenUser() user: AccessTokenPayload,
+    @Body() changePasswordDto: ChangePasswordDto
+  ) {
+    return this.usersService.changePassword(user.userId, changePasswordDto);
   }
 
   @Post("/signup")
