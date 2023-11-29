@@ -40,7 +40,7 @@ export class VerifyAuthDto {
 
   @IsNumber()
   @IsNotEmpty()
-  authNumber: string;
+  authNumber: number;
 }
 
 export class ChangePasswordDto {
